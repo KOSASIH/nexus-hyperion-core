@@ -1,2 +1,28 @@
-# Google App Engine generated folder
-appengine-generated/
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# IDE specific files
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Data files
+data/
+*.csv
+*.json
+
+# Distribution files
+dist/
+build/
+*.egg-info/

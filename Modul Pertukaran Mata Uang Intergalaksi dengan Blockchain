@@ -1,0 +1,12 @@
+Untuk membangun modul pertukaran mata uang intergalaksi berbasis blockchain, kita dapat menggunakan kontrak pintar (smart contract) yang memungkinkan pertukaran antar mata uang dengan pendekatan desentralisasi. Modul ini harus mempertimbangkan aspek keamanan, transparansi, dan ketepatan nilai tukar, serta mendukung transaksi lintas jaringan.
+Kontrak Pintar Pertukaran Mata Uang Intergalaksi
+
+Kontrak pintar ini mendukung:
+
+1. Penyimpanan saldo pengguna.
+
+
+2. Pertukaran antar mata uang menggunakan nilai tukar yang bisa diatur oleh orakel atau pihak eksternal.
+
+
+3. Keamanan transaksi dan verifikasi agar pengguna memiliki saldo cukup sebelum pertukaran.

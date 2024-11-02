@@ -1,0 +1,66 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract IntergalacticCurrencyExchange {
+    
+    struct Currency {
+        string symbol;
+        uint256 rate; // nilai tukar relatif terhadap unit dasar (misalnya USD)
+    }
+
+    mapping(string => Currency) public currencies;
+    mapping(address => mapping(string => uint256)) public balances;
+
+    event Deposit(address indexed user, uint256 amount, string currency);
+    event Withdraw(address indexed user, uint256 amount, string currency);
+    event Exchange(
+        address indexed user,
+        uint256 amount,
+        string fromCurrency,
+        string toCurrency,
+        uint256 resultAmount
+    );
+
+    // Fungsi untuk menambahkan atau memperbarui mata uang dan nilai tukar
+    function addOrUpdateCurrency(string memory symbol, uint256 rate) public {
+        currencies[symbol] = Currency(symbol, rate);
+    }
+
+    // Fungsi untuk deposit mata uang
+    function deposit(uint256 amount, string memory symbol) public {
+        require(currencies[symbol].rate > 0, "Mata uang tidak valid");
+        balances[msg.sender][symbol] += amount;
+        emit Deposit(msg.sender, amount, symbol);
+    }
+
+    // Fungsi untuk menarik dana
+    function withdraw(uint256 amount, string memory symbol) public {
+        require(balances[msg.sender][symbol] >= amount, "Saldo tidak cukup");
+        balances[msg.sender][symbol] -= amount;
+        emit Withdraw(msg.sender, amount, symbol);
+    }
+
+    // Fungsi untuk menukar antar mata uang
+    function exchange(
+        uint256 amount,
+        string memory fromCurrency,
+        string memory toCurrency
+    ) public {
+        require(balances[msg.sender][fromCurrency] >= amount, "Saldo tidak cukup");
+        require(currencies[fromCurrency].rate > 0, "Mata uang asal tidak valid");
+        require(currencies[toCurrency].rate > 0, "Mata uang tujuan tidak valid");
+
+        // Menghitung jumlah yang akan diterima dalam mata uang tujuan
+        uint256 resultAmount = (amount * currencies[fromCurrency].rate) / currencies[toCurrency].rate;
+
+        balances[msg.sender][fromCurrency] -= amount;
+        balances[msg.sender][toCurrency] += resultAmount;
+
+        emit Exchange(msg.sender, amount, fromCurrency, toCurrency, resultAmount);
+    }
+
+    // Fungsi untuk mendapatkan saldo pengguna
+    function getBalance(address user, string memory symbol) public view returns (uint256) {
+        return balances[user][symbol];
+    }
+}

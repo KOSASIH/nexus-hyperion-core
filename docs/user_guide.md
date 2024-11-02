@@ -55,7 +55,7 @@ To optimize resource allocation, follow these steps:
 
 ## Troubleshooting
 
-For troubleshooting and support, please refer to the [FAQ](faq.md) or contact our support team at [support@nexus-hyperion.com](mailto:support@nexus-hyperion.com).
+For troubleshooting and support, please refer to the [FAQ](faq.md) or contact our support team at [support@nexus-hyperion.example.com](mailto:support@nexus-hyperion.example.com).
 
 ## Conclusion
 

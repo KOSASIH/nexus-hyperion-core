@@ -1,0 +1,10 @@
+Agar nilai tukar tetap akurat, modul ini bisa dikembangkan dengan integrasi orakel blockchain seperti Chainlink, yang akan memperbarui nilai tukar sesuai dengan data real-time dari pasar intergalaksi atau galaksi lain.
+
+Untuk mengintegrasikan modul ini dengan orakel, kita dapat menggunakan layanan seperti Chainlink. Orakel memungkinkan kontrak pintar untuk mendapatkan data eksternal, termasuk nilai tukar intergalaksi yang bisa berubah-ubah secara real-time. Berikut adalah langkah-langkah untuk mengintegrasikan orakel ke dalam kontrak pintar yang sudah ada.
+
+Prasyarat Integrasi
+
+1. Chainlink Oracle: Chainlink menyediakan layanan orakel yang dapat mengirim data ke kontrak pintar di blockchain.
+
+
+2. Kontrak Pintar dengan Chainlink: Kita perlu menambahkan Chainlink dalam kontrak pintar dan meminta data harga saat pertukaran dilakukan.

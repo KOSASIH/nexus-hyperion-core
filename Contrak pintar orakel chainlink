@@ -1,0 +1,80 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+
+contract IntergalacticCurrencyExchangeWithOracle {
+    
+    struct Currency {
+        string symbol;
+        address priceFeed; // Address dari orakel Chainlink
+    }
+
+    mapping(string => Currency) public currencies;
+    mapping(address => mapping(string => uint256)) public balances;
+
+    event Deposit(address indexed user, uint256 amount, string currency);
+    event Withdraw(address indexed user, uint256 amount, string currency);
+    event Exchange(
+        address indexed user,
+        uint256 amount,
+        string fromCurrency,
+        string toCurrency,
+        uint256 resultAmount
+    );
+
+    // Fungsi untuk menambahkan atau memperbarui mata uang dan alamat orakel Chainlink
+    function addOrUpdateCurrency(string memory symbol, address priceFeed) public {
+        currencies[symbol] = Currency(symbol, priceFeed);
+    }
+
+    // Fungsi untuk deposit mata uang
+    function deposit(uint256 amount, string memory symbol) public {
+        require(currencies[symbol].priceFeed != address(0), "Mata uang tidak valid");
+        balances[msg.sender][symbol] += amount;
+        emit Deposit(msg.sender, amount, symbol);
+    }
+
+    // Fungsi untuk menarik dana
+    function withdraw(uint256 amount, string memory symbol) public {
+        require(balances[msg.sender][symbol] >= amount, "Saldo tidak cukup");
+        balances[msg.sender][symbol] -= amount;
+        emit Withdraw(msg.sender, amount, symbol);
+    }
+
+    // Fungsi untuk menukar antar mata uang menggunakan orakel Chainlink
+    function exchange(
+        uint256 amount,
+        string memory fromCurrency,
+        string memory toCurrency
+    ) public {
+        require(balances[msg.sender][fromCurrency] >= amount, "Saldo tidak cukup");
+        require(currencies[fromCurrency].priceFeed != address(0), "Mata uang asal tidak valid");
+        require(currencies[toCurrency].priceFeed != address(0), "Mata uang tujuan tidak valid");
+
+        // Mendapatkan nilai tukar dari orakel
+        uint256 fromRate = getLatestPrice(currencies[fromCurrency].priceFeed);
+        uint256 toRate = getLatestPrice(currencies[toCurrency].priceFeed);
+
+        // Menghitung jumlah yang akan diterima dalam mata uang tujuan
+        uint256 resultAmount = (amount * fromRate) / toRate;
+
+        balances[msg.sender][fromCurrency] -= amount;
+        balances[msg.sender][toCurrency] += resultAmount;
+
+        emit Exchange(msg.sender, amount, fromCurrency, toCurrency, resultAmount);
+    }
+
+    // Fungsi untuk mendapatkan harga terbaru dari orakel Chainlink
+    function getLatestPrice(address priceFeed) internal view returns (uint256) {
+        AggregatorV3Interface aggregator = AggregatorV3Interface(priceFeed);
+        (, int256 price,,,) = aggregator.latestRoundData();
+        require(price > 0, "Harga tidak valid dari orakel");
+        return uint256(price);
+    }
+
+    // Fungsi untuk mendapatkan saldo pengguna
+    function getBalance(address user, string memory symbol) public view returns (uint256) {
+        return balances[user][symbol];
+    }
+}
